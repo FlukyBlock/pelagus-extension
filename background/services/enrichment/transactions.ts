@@ -28,7 +28,7 @@ import {
   getERC20LogsForAddresses,
 } from "./utils"
 import { enrichAddressOnNetwork } from "./addresses"
-import { OPTIMISM } from "../../constants"
+import { OPTIMISM, SECOND } from "../../constants"
 import { parseLogsForWrappedDepositsAndWithdrawals } from "../../lib/wrappedAsset"
 import {
   ERC20TransferLog,
@@ -183,6 +183,7 @@ export async function annotationsFromLogs(
  * Resolve an annotation for a partial transaction request, or a pending
  * or mined transaction.
  */
+var latestAsk = 0
 export default async function resolveTransactionAnnotation(
   chainService: ChainService,
   indexingService: IndexingService,
@@ -198,6 +199,7 @@ export default async function resolveTransactionAnnotation(
       }),
   desiredDecimals: number
 ): Promise<TransactionAnnotation> {
+  
   const assets = await indexingService.getCachedAssets(network)
 
   // By default, annotate all requests as contract interactions, unless they
@@ -215,6 +217,14 @@ export default async function resolveTransactionAnnotation(
               asset.symbol === transaction.network.baseAsset.symbol
           )?.metadata?.logoURL,
         }
+
+  if(latestAsk + 5 * SECOND > Date.now()) {
+    // Requesting too often
+    console.log("Requesting tx annotations too often, skipping")
+    latestAsk = Date.now()
+    return txAnnotation
+  }
+  latestAsk = Date.now()
 
   let block: AnyEVMBlock | undefined
 
