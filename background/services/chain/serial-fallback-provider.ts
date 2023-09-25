@@ -778,7 +778,6 @@ export default class SerialFallbackProvider extends QuaisJsonRpcProvider {
         if (error instanceof Error) {
           err = true // only reset backoff timer if there is no error
           if (error.message.includes("could not detect network")) {
-            
             let prevBackoffTime = this.backoffUrlsToTime.get(this.currentProvider.connection.url)??BASE_BACKOFF_MS
             let newBackoffTime = Math.min(prevBackoffTime * 2, MAX_BACKOFF_MS)
             this.backoffUrlsToTime.set(this.currentProvider.connection.url, newBackoffTime)
@@ -886,7 +885,6 @@ export default class SerialFallbackProvider extends QuaisJsonRpcProvider {
       if (error instanceof Error) {
         err = true // only reset backoff timer if there is no error
         if (error.message.includes("could not detect network")) {
-          
           let prevBackoffTime = this.backoffUrlsToTime.get(this.currentProvider.connection.url)??BASE_BACKOFF_MS
           let newBackoffTime = Math.min(prevBackoffTime * 2, MAX_BACKOFF_MS)
           this.backoffUrlsToTime.set(this.currentProvider.connection.url, newBackoffTime)

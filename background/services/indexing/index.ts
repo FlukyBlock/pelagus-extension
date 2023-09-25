@@ -72,6 +72,7 @@ interface Events extends ServiceLifecycleEvents {
   }
   prices: PricePoint[]
   assets: AnyAsset[]
+  networkError: boolean
   refreshAsset: SmartContractFungibleAsset
   removeAssetData: SmartContractFungibleAsset
 }

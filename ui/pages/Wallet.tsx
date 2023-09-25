@@ -28,6 +28,7 @@ import WalletActivityList from "../components/Wallet/WalletActivityList"
 import WalletAccountBalanceControl from "../components/Wallet/WalletAccountBalanceControl"
 import OnboardingOpenClaimFlowBanner from "../components/Onboarding/OnboardingOpenClaimFlowBanner"
 import WalletToggleDefaultBanner from "../components/Wallet/WalletToggleDefaultBanner"
+import WalletNoConnectionBanner from "../components/Wallet/WalletNoConnectionBanner"
 import WalletBanner from "../components/Wallet/Banner/WalletBanner"
 import WalletAnalyticsNotificationBanner from "../components/Wallet/WalletAnalyticsNotificationBanner"
 import NFTListCurrentWallet from "../components/NFTs/NFTListCurrentWallet"
@@ -35,6 +36,7 @@ import WalletHiddenAssets from "../components/Wallet/WalletHiddenAssets"
 import SharedButton from "../components/Shared/SharedButton"
 import SharedIcon from "../components/Shared/SharedIcon"
 import { bigIntToDecimal } from "@pelagus/pelagus-background/redux-slices/utils/asset-utils"
+
 
 export default function Wallet(): ReactElement {
   const { t } = useTranslation()
@@ -118,6 +120,9 @@ export default function Wallet(): ReactElement {
           isDisabled(FeatureFlags.ENABLE_UPDATED_DAPP_CONNECTIONS) && (
             <WalletToggleDefaultBanner />
           )}
+
+      <WalletNoConnectionBanner />
+
         <WalletAnalyticsNotificationBanner />
         <div className="section">
           <WalletAccountBalanceControl

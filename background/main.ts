@@ -71,11 +71,12 @@ import {
   updateKeyrings,
   setKeyringToVerify,
 } from "./redux-slices/keyrings"
-import { blockSeen, setEVMNetworks } from "./redux-slices/networks"
+import { blockSeen, setEVMNetworks, setNetworkError } from "./redux-slices/networks"
 import {
   initializationLoadingTimeHitLimit,
   emitter as uiSliceEmitter,
   setDefaultWallet,
+  setNetworkConnectError,
   setSelectedAccount,
   setNewSelectedAccount,
   setSnackbarMessage,

@@ -14,6 +14,7 @@ import { getShardFromAddress } from "./selectors"
 export const defaultSettings = {
   hideDust: false,
   defaultWallet: false,
+  networkConnectError: false,
   showTestNetworks: false,
   collectAnalytics: false,
   showAnalyticsNotification: false,
@@ -29,6 +30,7 @@ export type UIState = {
   settings: {
     hideDust: boolean
     defaultWallet: boolean
+    networkConnectError: boolean,
     showTestNetworks: boolean
     collectAnalytics: boolean
     showAnalyticsNotification: boolean
@@ -45,6 +47,7 @@ export type Events = {
   snackbarMessage: string
   deleteAnalyticsData: never
   newDefaultWalletValue: boolean
+  newNetworkConnectError: boolean
   refreshBackgroundPage: null
   sendEvent: AnalyticsEvent | OneTimeAnalyticsEvent
   newSelectedAccount: AddressOnNetwork
@@ -166,6 +169,16 @@ const uiSlice = createSlice({
         defaultWallet,
       },
     }),
+    setNetworkConnectError: (
+      state,
+      { payload: networkConnectError }: { payload: boolean }
+      ) => ({
+        ...state,
+        settings: {
+         ...state.settings,
+          networkConnectError,
+        },
+      }),
     setRouteHistoryEntries: (
       state,
       { payload: routeHistoryEntries }: { payload: Partial<Location>[] }
@@ -201,6 +214,7 @@ export const {
   setSelectedAccount,
   setSnackbarMessage,
   setDefaultWallet,
+  setNetworkConnectError,
   clearSnackbarMessage,
   setRouteHistoryEntries,
   setSlippageTolerance,
@@ -232,6 +246,15 @@ export const setNewDefaultWalletValue = createBackgroundAsyncThunk(
     await emitter.emit("newDefaultWalletValue", defaultWallet)
     // Once the default value has persisted, propagate to the store.
     dispatch(uiSlice.actions.setDefaultWallet(defaultWallet))
+  }
+)
+
+export const setNewNetworkConnectError = createBackgroundAsyncThunk(
+  "ui/setNewNetworkConnectError",
+  async (networkConnectError: boolean, { dispatch }) => {
+    await emitter.emit("newNetworkConnectError", networkConnectError)
+    // Once the default value has persisted, propagate to the store.
+    dispatch(uiSlice.actions.setNetworkConnectError(networkConnectError))
   }
 )
 
@@ -338,6 +361,11 @@ export const selectSnackbarMessage = createSelector(
 export const selectDefaultWallet = createSelector(
   selectSettings,
   (settings) => settings?.defaultWallet
+)
+
+export const selectNetworkConnectError = createSelector(
+  selectSettings,
+  (settings) => settings?.networkConnectError
 )
 
 export const selectShowAnalyticsNotification = createSelector(

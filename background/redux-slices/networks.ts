@@ -10,6 +10,7 @@ import { createBackgroundAsyncThunk } from "./utils"
 type NetworkState = {
   blockHeight: number | null
   baseFeePerGas: bigint | null
+  networkError: boolean
 }
 
 export type NetworksState = {
@@ -27,6 +28,7 @@ export const initialState: NetworksState = {
     "1": {
       blockHeight: null,
       baseFeePerGas: null,
+      networkError: false,
     },
   },
 }
@@ -40,11 +42,12 @@ const networksSlice = createSlice({
       { payload: blockPayload }: { payload: AnyEVMBlock }
     ) => {
       const block = blockPayload as EIP1559Block
-
+    
       if (!(block.network.chainID in immerState.blockInfo)) {
         immerState.blockInfo[block.network.chainID] = {
           blockHeight: block.blockHeight,
           baseFeePerGas: block?.baseFeePerGas ?? null,
+          networkError: true,
         }
       } else if (
         block.blockHeight >
@@ -54,8 +57,10 @@ const networksSlice = createSlice({
           block.blockHeight
         immerState.blockInfo[block.network.chainID].baseFeePerGas =
           block?.baseFeePerGas ?? null
+        immerState.blockInfo[block.network.chainID].networkError = true
       }
     },
+    
     /**
      * Receives all supported networks as the payload
      */
@@ -74,10 +79,19 @@ const networksSlice = createSlice({
         }
       })
     },
+
+    setNetworkError: (
+      immerState,
+      { payload }: { payload: boolean }
+    ) => {
+      Object.keys(immerState.blockInfo).forEach((chainID) => {
+        immerState.blockInfo[chainID].networkError = payload
+      })
+    },
   },
 })
 
-export const { blockSeen, setEVMNetworks } = networksSlice.actions
+export const { blockSeen, setEVMNetworks, setNetworkError } = networksSlice.actions
 
 export default networksSlice.reducer
 
